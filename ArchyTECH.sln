@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchyTECH.Core", "ArchyTECH.Core\ArchyTECH.Core.csproj", "{F8D45945-2243-4A5B-8066-D85C55ED4560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchyTECH.EntityFramework.Extensions", "ArchyTECH.EntityFramework.Extensions\ArchyTECH.EntityFramework.Extensions.csproj", "{20ABCAB0-1E9C-4DC7-9284-DFCDBC66029E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F8D45945-2243-4A5B-8066-D85C55ED4560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8D45945-2243-4A5B-8066-D85C55ED4560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8D45945-2243-4A5B-8066-D85C55ED4560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8D45945-2243-4A5B-8066-D85C55ED4560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20ABCAB0-1E9C-4DC7-9284-DFCDBC66029E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20ABCAB0-1E9C-4DC7-9284-DFCDBC66029E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20ABCAB0-1E9C-4DC7-9284-DFCDBC66029E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20ABCAB0-1E9C-4DC7-9284-DFCDBC66029E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F01D4458-15DD-4421-9948-E72896D9808D}
+	EndGlobalSection
+EndGlobal
