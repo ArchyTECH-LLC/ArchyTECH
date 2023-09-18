@@ -8,4 +8,5 @@ public interface IComponentStyleProvider
     public string Alert(ElementStyle style);
 
     public string Text(ElementStyle style);
+    public string Style(ElementStyle style);
 }
