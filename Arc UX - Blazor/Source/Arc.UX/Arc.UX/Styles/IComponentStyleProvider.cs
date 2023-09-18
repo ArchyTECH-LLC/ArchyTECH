@@ -1,6 +1,6 @@
 ﻿using Arc.UX.Components;
 
-namespace Arc.UX.Configuration;
+namespace Arc.UX.Styles;
 
 public interface IComponentStyleProvider
 {

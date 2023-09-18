@@ -1,4 +1,4 @@
-﻿namespace Arc.UX.Configuration;
+﻿namespace Arc.UX.Styles;
 
 public interface IIconStyleProvider
 {

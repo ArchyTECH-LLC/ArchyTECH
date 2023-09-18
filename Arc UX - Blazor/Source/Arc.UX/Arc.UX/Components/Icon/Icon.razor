@@ -1,11 +1,12 @@
-﻿@using Arc.UX.Configuration
+﻿@using Arc.UX.Styles
+@inherits ArcComponent
 
 @inject IIconStyleProvider IconStyleProvider
 @inject IComponentStyleProvider ComponentStyleProvider
 
 @if (string.IsNullOrEmpty(IconName) == false)
 {
-    <i class="@ComponentStyleProvider.Text(Style) @IconStyleProvider.Icon(IconName, IconDesign, IconAnimation)" title=@Title></i>
+    <i class="arc-icon @ComponentStyleProvider.Text(Style) @IconStyleProvider.Icon(IconName, IconDesign, IconAnimation) @CssClass" title=@Title></i>
 }
 
 @code {
@@ -13,8 +14,7 @@
     public string? IconName { get; set; }
     [Parameter]
     public string? Title { get; set; }
-    [Parameter]
-    public string? CssClass { get; set; }
+
     [Parameter]
     public bool Solid { get; set; } = true;
 
@@ -25,11 +25,8 @@
     [Parameter]
     public string? IconAnimation { get; set; }
     // public FontAwesomeAnimation? Animation { get; set; }
-
-
-
+    
     [Parameter]
     public ElementStyle Style { get; set; } = ElementStyle.Primary;
-
-   
+    
 }

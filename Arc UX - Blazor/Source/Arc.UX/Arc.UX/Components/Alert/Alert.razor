@@ -1,10 +1,10 @@
-﻿@using Arc.UX.Configuration
-
+﻿@using Arc.UX.Styles
+@inherits ArcComponent
 @inject IComponentStyleProvider ComponentStyleProvider
 
 @if (Visible)
 {
-    <div class="@ComponentStyleProvider.Alert(Style)">
+    <div class="arc-alert @ComponentStyleProvider.Alert(Style) @CssClass">
         @*@if (Icon.HasValue())
         {
             <span class="alert-link @($"{Configuration.IconPrefix}{Icon.ToLower()}")"></span>
@@ -23,6 +23,4 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    [Parameter]
-    public bool Visible { get; set; } = true;
 }
