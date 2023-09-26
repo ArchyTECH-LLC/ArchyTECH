@@ -23,8 +23,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release /p:Version=${VERSION}
+      run: dotnet build --configuration Release /p:Version=1.$BUILD_NUMBER.$DATE_VERSION
     - name: Test
-      run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
+      run: dotnet test --configuration Release /p:Version=1.$BUILD_NUMBER.$DATE_VERSION --no-build
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${{VERSION}} --no-build --output .
+      run: dotnet pack --configuration Release /p:Version=1.$BUILD_NUMBER.$DATE_VERSION --no-build --output .
