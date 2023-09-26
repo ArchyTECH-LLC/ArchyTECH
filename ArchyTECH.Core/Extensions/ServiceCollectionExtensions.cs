@@ -1,7 +1,7 @@
 ﻿#if NETCOREAPP
 
 using ArchyTECH.Core.Caching;
-using ArchyTECH.Core.EmbeeddedResources;
+using ArchyTECH.Core.EmbeddedResources;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

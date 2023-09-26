@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ArchyTECH.Core.EmbeeddedResources
+namespace ArchyTECH.Core.EmbeddedResources
 {
     public interface IEmbeddedResourceService
     {
