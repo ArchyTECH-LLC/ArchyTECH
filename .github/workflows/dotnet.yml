@@ -30,7 +30,7 @@ jobs:
       run: dotnet test --configuration Release /p:Version=${{ env.VERSION }} --no-build
       
     - name: Pack with custom version
-      run: dotnet pack --configuration Release --no-build --output nupkg/ -p:PackageVersion=${{ env.VERSION }}
+      run: dotnet pack --configuration Release --no-build --output nupkg/ -p:PackageVersion=${{ env.VERSION }}-prerelease
 
     - name: Upload NuGet package
       uses: actions/upload-artifact@v2
