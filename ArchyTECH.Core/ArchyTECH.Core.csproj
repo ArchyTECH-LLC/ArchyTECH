@@ -13,7 +13,8 @@
   <PropertyGroup>
     <PackageId>archyTECH.Core</PackageId>
     <PackageDescription>Lightweight package that contains several useful extension methods, caching logic, and result patterns that can be used at any project level</PackageDescription>
-    <!--<PackageProjectUrl></PackageProjectUrl>-->
+    <PackageProjectUrl>https://github.com/ArchyTECH-LLC/ArchyTECH</PackageProjectUrl>
+    <PackageRepositoryUrl>https://github.com/ArchyTECH-LLC/ArchyTECH</PackageRepositoryUrl>
     <PackageIcon>archytech.png</PackageIcon>
     <Icon>archytech.png</Icon>
     <Authors>Jeff Jacka</Authors>
@@ -21,6 +22,7 @@
     <Version Condition=" '$(BUILD_BUILDNUMBER)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</Version>
     <LangVersion>latest</LangVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
