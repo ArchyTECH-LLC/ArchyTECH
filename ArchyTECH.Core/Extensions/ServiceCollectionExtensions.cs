@@ -12,7 +12,7 @@ namespace ArchyTECH.Core.Extensions
     public static class ServiceCollectionExtensions
     {
 
-        public static void AddDpiCoreServices(this IServiceCollection services)
+        public static void AddArchyTechCore(this IServiceCollection services)
         {
             services.AddSingleton<ICache, Cache>();
             services.AddSingleton<IEmbeddedResourceService, EmbeddedResourceService>();
