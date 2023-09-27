@@ -17,7 +17,7 @@
         /// <summary>
         /// (Optional) error id 
         /// </summary>
-        public string ErrorId { get; set; }
+        public string? ErrorId { get; set; }
 
         /// <summary>
         /// Whether or not request was successful 
@@ -27,12 +27,12 @@
         /// <summary>
         /// Status message for the request
         /// </summary>
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         /// <summary>
         /// A title for the result
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Meant to line up with JQuery validation of new { InvalidPropertyName: InvalidMessage} to provide client side validation error messages
@@ -68,8 +68,9 @@
         /// Create a quick way to create a failure message
         /// </summary>
         /// <param name="message">Helpful message that can be presented to UI</param>
+        /// <param name="errorId">Optional property for tracking errors</param>
         /// <returns>Failed Result with message</returns>
-        public static Result Failed(string message, string errorId = null)
+        public static Result Failed(string message, string? errorId = null)
         {
             return new Result(false, message)
             {
@@ -83,8 +84,9 @@
         /// <typeparam name="T">Type of data result</typeparam>
         /// <param name="message">Helpful message that can be presented to UI</param>
         /// <param name="data">Object that could be used by UI</param>
+        /// <param name="errorId">Optional property for tracking errors</param>
         /// <returns>Failed Result with message and data</returns>
-        public static DataResult<T> Failed<T>(string message, T data, string errorId = null)
+        public static DataResult<T> Failed<T>(string message, T data, string? errorId = null)
         {
             return new DataResult<T>(false, message)
             {

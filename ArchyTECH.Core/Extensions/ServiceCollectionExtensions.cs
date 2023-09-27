@@ -26,7 +26,7 @@ namespace ArchyTECH.Core.Extensions
             services.AddOptions();
             services.Configure<TConfiguration>(configurationSection);
             services.AddSingleton(provider =>
-                provider.GetService<IOptions<TConfiguration>>().Value);
+                provider.GetRequiredService<IOptions<TConfiguration>>().Value);
         }
 
         /// <summary>
