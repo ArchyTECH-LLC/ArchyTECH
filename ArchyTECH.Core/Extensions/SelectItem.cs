@@ -1,6 +1,6 @@
 ﻿namespace ArchyTECH.Core.Extensions
 {
-    public struct SelectItem<TValue>
+    public readonly struct SelectItem<TValue>
     {
 
         public SelectItem(string text, TValue value)

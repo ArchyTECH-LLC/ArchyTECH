@@ -58,7 +58,7 @@ namespace ArchyTECH.Core.Extensions
         /// Returns a formal date format: 31st day of July 2020
         /// </summary>
         /// <param name="input">The date to format</param>
-        public static string ToFormalDateFormat(this DateTime? input)
+        public static string? ToFormalDateFormat(this DateTime? input)
         {
             if (input == null) return null;
 
@@ -72,21 +72,17 @@ namespace ArchyTECH.Core.Extensions
         /// <param name="input">The number to format</param>
         public static string ToOrdinalSuffixFormat(this int input)
         {
-            switch (input)
+            return input switch
             {
-                case 1:
-                case 21:
-                case 31:
-                    return $"{input}st";
-                case 2:
-                case 22:
-                    return $"{input}nd";
-                case 3:
-                case 23:
-                    return $"{input}rd";
-                default:
-                    return $"{input}th";
-            }
+                1 => $"{input}st",
+                21 => $"{input}st",
+                31 => $"{input}st",
+                2 => $"{input}nd",
+                22 => $"{input}nd",
+                3 => $"{input}rd",
+                23 => $"{input}rd",
+                _ => $"{input}th"
+            };
         }
 
         /// <summary>

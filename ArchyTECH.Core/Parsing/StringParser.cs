@@ -5,11 +5,11 @@ namespace ArchyTECH.Core.Parsing
 {
     public static class StringParser
     {
-        private delegate bool TryParseDelegate<T>(string s, out T result);
+        private delegate bool TryParseDelegate<T>(string? s, out T result);
         private static readonly Dictionary<Type, object> ParsingDelegateCache = new();
         private static readonly Regex TrueExpression = new("^(true|yes|1|on|y)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex FalseExpression = new("^(false|no|0|off|n)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        
+
         private static readonly Type GuidType = typeof(Guid);
         private static readonly Delegate ParseGuidDelegate = TryParseGuid;
 
@@ -28,7 +28,7 @@ namespace ArchyTECH.Core.Parsing
         /// equal false.  If the input string is not in the correct format, method returns false and
         /// result.HasValue will equal false.  If the input string is in the correct format and is not
         /// null or empty, method returns true and result.HasValue will equal true.</remarks>
-        private static void TryParse<T>(string s, out T? result, TryParseDelegate<T> method) where T : struct
+        private static void TryParse<T>(string? s, out T? result, TryParseDelegate<T> method) where T : struct
         {
             if (s.IsNullOrEmpty())
             {
@@ -53,7 +53,7 @@ namespace ArchyTECH.Core.Parsing
         /// <param name="s">The string to attempt to parse into a Guid.</param>
         /// <param name="result">The resulting Guid.</param>
         /// <returns>True if the parsing was successful; otherwise false.</returns>
-        private static bool TryParseGuid(string s, out Guid result)
+        private static bool TryParseGuid(string? s, out Guid result)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -65,7 +65,7 @@ namespace ArchyTECH.Core.Parsing
             try
             {
                 //try parsing.  If we can create a Guid from the string, return that Guid.
-                result = new Guid(s.Trim());
+                result = new Guid(s!.Trim());
                 return true;
             }
             catch (FormatException)
@@ -107,19 +107,36 @@ namespace ArchyTECH.Core.Parsing
             return false;
         }
 
-        private static bool TryParseEnum<T>(string s, out T result)
+        private static bool TryParseEnum<T>(string? s, out T result)
         {
 
             try
             {
-                result = (T)Enum.Parse(typeof(T), s, true);
-                return true;
+
+#if NETCOREAPP
+                if (Enum.TryParse(typeof(T), s, true, out var parsedObj))
+                {
+                    result = (T)parsedObj;
+                    return true;
+                }
+#else
+
+                if (s != null)
+                {
+                    result = (T)Enum.Parse(typeof(T), s, true);
+                    return true;
+                }
+#endif
             }
             catch
             {
-                result = default;
-                return false;
+                // .NET Framework does not provide a exception safe try parse method
+
+                // ignored
             }
+
+            result = default!;
+            return false;
         }
 
 
@@ -131,10 +148,10 @@ namespace ArchyTECH.Core.Parsing
         /// <param name="s">The string to parse into the structure.</param>
         /// <param name="result">The nullable result.</param>
         /// <returns>True if the input string was successfully parsed; otherwise false.</returns>
-        /// <remarks>result.HasValue will be false if the input string was not successufully parsed 
+        /// <remarks>result.HasValue will be false if the input string was not successfully parsed 
         /// or if the input string is null or empty. The parsing will fail if the input string is 
         /// not in the correct format.  Parsing succeeds if the input string is null or empty.</remarks>
-        private static void Parse<T>(string s, out T? result) where T : struct
+        private static void Parse<T>(string? s, out T? result) where T : struct
         {
             TryParseDelegate<T>? parseDelegate = null;
             var resultType = typeof(T);
@@ -143,8 +160,7 @@ namespace ArchyTECH.Core.Parsing
             //if we have, then use that delegate instead of continually using reflection to find it
             lock (ParsingDelegateCache)
             {
-                if (ParsingDelegateCache.ContainsKey(resultType))
-                    parseDelegate = (TryParseDelegate<T>) ParsingDelegateCache[resultType];
+                parseDelegate = (TryParseDelegate<T>?)ParsingDelegateCache.GetOrNull(resultType);
 
                 if (parseDelegate == null)
                 {
@@ -163,13 +179,13 @@ namespace ArchyTECH.Core.Parsing
             // GUIDs have a TryParseGuid method instead of TryParse
             if (resultType == GuidType)
             {
-                return (TryParseDelegate<T>) ParseGuidDelegate;
+                return (TryParseDelegate<T>)ParseGuidDelegate;
             }
 
             // Enhancing Boolean parsing to be for flexible for 0/1, yes/no etc
             if (resultType == BoolType)
             {
-                return (TryParseDelegate<T>) ParseBoolDelegate;
+                return (TryParseDelegate<T>)ParseBoolDelegate;
             }
 
             // Enable parsing enums
@@ -191,7 +207,7 @@ namespace ArchyTECH.Core.Parsing
         /// <param name="s">The value to parse for creating the nullable value</param>
         /// <returns>Null if the input string was null or could not be parsed.  The value of
         /// the parsed string if the parsing was successful.</returns>
-        public static T? GetNullable<T>(string s) where T : struct
+        public static T? GetNullable<T>(string? s) where T : struct
         {
             Parse(s, out T? value);
             return value;

@@ -25,9 +25,8 @@ namespace ArchyTECH.Core.EmbeddedResources
             var path = $"{assembly.GetName().Name}.{resourceFilePath}";
             var stream = assembly
                     .GetManifestResourceStream(path);
-            if (stream == null)
-                throw new InvalidOperationException($"Unable to find embedded resource path: {path}");
-            return stream;
+
+            return stream ?? throw new InvalidOperationException($"Unable to find embedded resource path: {path}");
         }
 
         public string GetEmbeddedFileContentByAssemblyType<TAssemblyType>(string resourceFilePath)
@@ -37,10 +36,8 @@ namespace ArchyTECH.Core.EmbeddedResources
 
         public string GetEmbeddedFileContent(Assembly assembly, string resourceFilePath)
         {
-            using (var reader = new StreamReader(GetEmbeddedFileStream(assembly, resourceFilePath)))
-            {
-                return reader.ReadToEnd();
-            }
+            using var reader = new StreamReader(GetEmbeddedFileStream(assembly, resourceFilePath));
+            return reader.ReadToEnd();
         }
 
 
@@ -51,12 +48,9 @@ namespace ArchyTECH.Core.EmbeddedResources
 
         public Byte[] GetEmbeddedFileBytes(Assembly assembly, string resourceFilePath)
         {
-
-            using (var memoryStream = new MemoryStream())
-            {
-                GetEmbeddedFileStream(assembly, resourceFilePath).CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            GetEmbeddedFileStream(assembly, resourceFilePath).CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

@@ -46,33 +46,37 @@ namespace ArchyTECH.EntityFramework.Extensions.Extensions
         
         public static PagedDataResult<T> ToPagedResultWithNoLock<T>(this IQueryable<T> query, int pageNumber, int pageSize)
         {
-
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
-            {
-                var list =  ToPagedResult(query, pageNumber, pageSize);
-                scope.Complete();
-                return list;
-            }
+            using var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted});
+            var list =  ToPagedResult(query, pageNumber, pageSize);
+            scope.Complete();
+            return list;
         }
 
         public static int CountWithNoLocks<T>(this IQueryable<T> query)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted }))
-            {
-                var toReturn = query.Count();
-                scope.Complete();
-                return toReturn;
-            }
+            using var scope = new TransactionScope(
+                TransactionScopeOption.Required, 
+                new TransactionOptions
+                {
+                    IsolationLevel = IsolationLevel.ReadUncommitted
+                });
+
+            var toReturn = query.Count();
+            scope.Complete();
+            return toReturn;
         }
 
         public static List<T> ToListWithNoLocks<T>(this IQueryable<T> query)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted }))
-            {
-                var toReturn = query.ToList();
-                scope.Complete();
-                return toReturn;
-            }
+            using var scope = new TransactionScope(
+                TransactionScopeOption.Required, 
+                new TransactionOptions
+                {
+                    IsolationLevel = IsolationLevel.ReadUncommitted
+                });
+            var toReturn = query.ToList();
+            scope.Complete();
+            return toReturn;
         }
 
         public static ConditionalQueryable<T> If<T>(this IQueryable<T> query, bool condition)
@@ -142,35 +146,35 @@ namespace ArchyTECH.EntityFramework.Extensions.Extensions
 
         public static IEnumerable<T> Except<T, TKey>(this IEnumerable<T> enumerable, IEnumerable<T> comparables, Func<T, TKey> keySelector)
         {
-            return enumerable.Except(comparables, new LambdaComparer<T>((x, y) => Equals(keySelector(x), keySelector(y))));
+            return enumerable.Except(comparables, new LambdaComparer<T>((x, y) =>
+            {
+                object? right = x != null ? keySelector(x) : null;
+                object? left = y != null ? keySelector(y) : null;
+
+                return Equals(right, left);
+            }));
         }
 
         private class LambdaComparer<T> : IEqualityComparer<T>
         {
-            private readonly Func<T, T, bool> _lambdaComparer;
-            private readonly Func<T, int> _lambdaHash;
+            private readonly Func<T?, T?, bool> _lambdaComparer;
+            private readonly Func<T?, int> _lambdaHash;
 
-            public LambdaComparer(Func<T, T, bool> lambdaComparer) :
+            public LambdaComparer(Func<T?, T?, bool> lambdaComparer) :
                 this(lambdaComparer, o => 0)
             {
             }
 
-            public LambdaComparer(Func<T, T, bool> lambdaComparer, Func<T, int> lambdaHash)
+            public LambdaComparer(Func<T?, T?, bool> lambdaComparer, Func<T?, int> lambdaHash)
             {
-                if (lambdaComparer == null)
-                    throw new ArgumentNullException("lambdaComparer");
-                if (lambdaHash == null)
-                    throw new ArgumentNullException("lambdaHash");
-
-                _lambdaComparer = lambdaComparer;
-                _lambdaHash = lambdaHash;
+                _lambdaComparer = lambdaComparer ?? throw new ArgumentNullException(nameof(lambdaComparer));
+                _lambdaHash = lambdaHash ?? throw new ArgumentNullException(nameof(lambdaHash));
             }
 
-            public bool Equals(T x, T y)
+            public bool Equals(T? x, T? y)
             {
                 return _lambdaComparer(x, y);
             }
-
             public int GetHashCode(T obj)
             {
                 return _lambdaHash(obj);
