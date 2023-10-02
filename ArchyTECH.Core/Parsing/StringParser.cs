@@ -15,6 +15,18 @@ namespace ArchyTECH.Core.Parsing
 
         private static readonly Type BoolType = typeof(bool);
         private static readonly Delegate ParseBoolDelegate = TryParseBool;
+        
+        /// <summary>
+        /// Returns a Nullable instance that is parsed from the input string.
+        /// </summary>
+        /// <typeparam name="T">The Nullable type to parse the value for.</typeparam>
+        /// <param name="s">The value to parse for creating the nullable value</param>
+        /// <returns>Null if the input string was null or could not be parsed.  The value of
+        /// the parsed string if the parsing was successful.</returns>
+        public static T? GetNullable<T>(string? s)
+        {
+            return Parse(s, out T? value) ? value : default;
+        }
 
         /// <summary>
         /// Attempts to parse the string into the Nullable structure of type T.
@@ -62,7 +74,7 @@ namespace ArchyTECH.Core.Parsing
             try
             {
                 //try parsing.  If we can create a Guid from the string, return that Guid.
-                result = new Guid(s!.Trim());
+                result = new Guid(s.Trim());
                 return true;
             }
             catch (FormatException)
@@ -148,7 +160,7 @@ namespace ArchyTECH.Core.Parsing
         /// not in the correct format.  Parsing succeeds if the input string is null or empty.</remarks>
         private static bool Parse<T>(string? s, out T? result)
         {
-            TryParseDelegate<T>? parseDelegate = null;
+            TryParseDelegate<T>? parseDelegate;
             var resultType = typeof(T);
 
             //see if we've already resolved the delegate for the type that's being passed in
@@ -193,18 +205,6 @@ namespace ArchyTECH.Core.Parsing
             return (TryParseDelegate<T>)
                 Delegate.CreateDelegate(typeof(TryParseDelegate<T>), typeof(T), "TryParse");
 
-        }
-
-        /// <summary>
-        /// Returns a Nullable instance that is parsed from the input string.
-        /// </summary>
-        /// <typeparam name="T">The Nullable type to parse the value for.</typeparam>
-        /// <param name="s">The value to parse for creating the nullable value</param>
-        /// <returns>Null if the input string was null or could not be parsed.  The value of
-        /// the parsed string if the parsing was successful.</returns>
-        public static T? GetNullable<T>(string? s)
-        {
-            return Parse(s, out T? value) ? value : default;
         }
     }
 }
