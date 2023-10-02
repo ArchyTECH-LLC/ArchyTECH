@@ -57,7 +57,7 @@ namespace ArchyTECH.Core.Extensions
         {
             return string.IsNullOrWhiteSpace(input);
         }
-        public static bool EqualsIgnoreCase(this string? input, string input2)
+        public static bool EqualsIgnoreCase(this string? input, string? input2)
         {
             return string.Equals(input, input2, StringComparison.OrdinalIgnoreCase);
         }
