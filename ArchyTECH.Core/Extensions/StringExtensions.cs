@@ -4,19 +4,20 @@ namespace ArchyTECH.Core.Extensions
 {
     public static class StringExtensions
     {
-        public static T Parse<T>(this string? input) where T : struct
+        public static T Parse<T>(this string? input)
         {
-            T? parsedValue = input.ParseOrNull<T>();
-            if (parsedValue.HasValue) return parsedValue.Value;
-            throw new ArgumentException("'{0}' cannot be parsed to type '{1}' ".FormatArgs(input ?? "NULL", typeof(T).Name));
+            var parsedValue = input.ParseOrNull<T>();
+
+            return parsedValue
+                   ?? throw new ArgumentException($"'{input}' cannot be parsed to type '{typeof(T).Name}' ");
         }
 
-        public static T? ParseOrNull<T>(this string? input) where T : struct
+        public static T? ParseOrNull<T>(this string? input)
         {
             return StringParser.GetNullable<T>(input);
         }
 
-        public static T ParseOrDefault<T>(this string? input, T defaultValue) where T : struct
+        public static T ParseOrDefault<T>(this string? input, T defaultValue)
         {
             var parsedValue = input.ParseOrNull<T>();
             return parsedValue ?? defaultValue;
