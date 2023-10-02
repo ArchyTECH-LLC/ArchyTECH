@@ -28,23 +28,20 @@ namespace ArchyTECH.Core.Parsing
         /// equal false.  If the input string is not in the correct format, method returns false and
         /// result.HasValue will equal false.  If the input string is in the correct format and is not
         /// null or empty, method returns true and result.HasValue will equal true.</remarks>
-        private static void TryParse<T>(string? s, out T? result, TryParseDelegate<T> method) where T : struct
+        private static bool TryParse<T>(string? s, out T? result, TryParseDelegate<T> method)
         {
-            if (s.IsNullOrEmpty())
+            if (s.HasValue())
             {
-                result = null;
-                return;
+                var success = method(s, out var value);
+                if (success)
+                {
+                    result = value;
+                    return true;
+                }
             }
 
-            var success = method(s, out var value);
-            if (success)
-            {
-                result = value;
-            }
-            else
-            {
-                result = null;
-            }
+            result = default;
+            return false;
         }
 
         /// <summary>
@@ -139,8 +136,6 @@ namespace ArchyTECH.Core.Parsing
             return false;
         }
 
-
-
         /// <summary>
         /// Parses the input string and creates a Nullable struct from it.
         /// </summary>
@@ -151,7 +146,7 @@ namespace ArchyTECH.Core.Parsing
         /// <remarks>result.HasValue will be false if the input string was not successfully parsed 
         /// or if the input string is null or empty. The parsing will fail if the input string is 
         /// not in the correct format.  Parsing succeeds if the input string is null or empty.</remarks>
-        private static void Parse<T>(string? s, out T? result) where T : struct
+        private static bool Parse<T>(string? s, out T? result)
         {
             TryParseDelegate<T>? parseDelegate = null;
             var resultType = typeof(T);
@@ -171,7 +166,7 @@ namespace ArchyTECH.Core.Parsing
                 }
             }
 
-            TryParse(s, out result, parseDelegate);
+            return TryParse(s, out result, parseDelegate);
         }
 
         private static TryParseDelegate<T> CreateParsingDelegate<T>(Type resultType)
@@ -207,10 +202,9 @@ namespace ArchyTECH.Core.Parsing
         /// <param name="s">The value to parse for creating the nullable value</param>
         /// <returns>Null if the input string was null or could not be parsed.  The value of
         /// the parsed string if the parsing was successful.</returns>
-        public static T? GetNullable<T>(string? s) where T : struct
+        public static T? GetNullable<T>(string? s)
         {
-            Parse(s, out T? value);
-            return value;
+            return Parse(s, out T? value) ? value : default;
         }
     }
 }
