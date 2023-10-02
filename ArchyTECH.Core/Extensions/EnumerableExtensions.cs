@@ -1,11 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using ArchyTECH.Core.Exceptions;
 
 namespace ArchyTECH.Core.Extensions
 {
     public static class EnumerableExtensions
     {
 
-        
+
         /// <summary>
         /// Specifies a conditional filter for an enumerable collection that will only be executed when true
         /// </summary>
@@ -53,14 +53,21 @@ namespace ArchyTECH.Core.Extensions
             return items.Any(filterExpression) == false;
         }
 
-        public static T Single<T>(this IEnumerable<T> items, Func<T, bool> filter, string errorMessage)
+        public static T Single<T>(this IEnumerable<T> items, Func<T, bool> filter, 
+            string moreThanOneErrorMessage,
+            string notFoundErrorMessage)
         {
-            if (items.Count() == 1) return items.Single(filter);
 
-            int? id = null;
-            string? firstName = null;
-            
-            throw new InvalidOperationException(errorMessage);
+            T? first = default;
+            foreach (var item in items)
+            {
+                if (first == null) first = item;
+                else throw ValidationException.MultipleFound(moreThanOneErrorMessage);
+            }
+
+            if (first != null) return first;
+
+            throw ValidationException.NotFound(notFoundErrorMessage);
         }
 
     }
