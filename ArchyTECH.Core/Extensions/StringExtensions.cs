@@ -22,6 +22,11 @@ namespace ArchyTECH.Core.Extensions
             var parsedValue = input.ParseOrNull<T>();
             return parsedValue ?? defaultValue;
         }
+        
+        public static bool TryParse<T>(this string? input, out T? value)
+        {
+            return StringParser.TryParse(input, out value);
+        }
 
         public static bool HasValue(this string? input)
         {

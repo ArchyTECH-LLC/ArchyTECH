@@ -25,7 +25,40 @@ namespace ArchyTECH.Core.Parsing
         /// the parsed string if the parsing was successful.</returns>
         public static T? GetNullable<T>(string? s)
         {
-            return Parse(s, out T? value) ? value : default;
+            return TryParse(s, out T? value) ? value : default;
+        }
+
+        /// <summary>
+        /// Parses the input string and creates a Nullable struct from it.
+        /// </summary>
+        /// <typeparam name="T">The struct to try and create from the string reference.</typeparam>
+        /// <param name="s">The string to parse into the structure.</param>
+        /// <param name="result">The nullable result.</param>
+        /// <returns>True if the input string was successfully parsed; otherwise false.</returns>
+        /// <remarks>result.HasValue will be false if the input string was not successfully parsed 
+        /// or if the input string is null or empty. The parsing will fail if the input string is 
+        /// not in the correct format.  Parsing succeeds if the input string is null or empty.</remarks>
+        public static bool TryParse<T>(string? s, out T? result)
+        {
+            TryParseDelegate<T>? parseDelegate;
+            var resultType = typeof(T);
+
+            //see if we've already resolved the delegate for the type that's being passed in
+            //if we have, then use that delegate instead of continually using reflection to find it
+            lock (ParsingDelegateCache)
+            {
+                parseDelegate = (TryParseDelegate<T>?)ParsingDelegateCache.GetOrNull(resultType);
+
+                if (parseDelegate == null)
+                {
+                    parseDelegate = CreateParsingDelegate<T>(resultType);
+
+                    //add the delegate to the dictionary of resolved delegates_delegates[typeof(T)] = parseDelegate;
+                    ParsingDelegateCache[resultType] = parseDelegate;
+                }
+            }
+
+            return TryParse(s, out result, parseDelegate);
         }
 
         /// <summary>
@@ -146,39 +179,6 @@ namespace ArchyTECH.Core.Parsing
 
             result = default!;
             return false;
-        }
-
-        /// <summary>
-        /// Parses the input string and creates a Nullable struct from it.
-        /// </summary>
-        /// <typeparam name="T">The struct to try and create from the string reference.</typeparam>
-        /// <param name="s">The string to parse into the structure.</param>
-        /// <param name="result">The nullable result.</param>
-        /// <returns>True if the input string was successfully parsed; otherwise false.</returns>
-        /// <remarks>result.HasValue will be false if the input string was not successfully parsed 
-        /// or if the input string is null or empty. The parsing will fail if the input string is 
-        /// not in the correct format.  Parsing succeeds if the input string is null or empty.</remarks>
-        private static bool Parse<T>(string? s, out T? result)
-        {
-            TryParseDelegate<T>? parseDelegate;
-            var resultType = typeof(T);
-
-            //see if we've already resolved the delegate for the type that's being passed in
-            //if we have, then use that delegate instead of continually using reflection to find it
-            lock (ParsingDelegateCache)
-            {
-                parseDelegate = (TryParseDelegate<T>?)ParsingDelegateCache.GetOrNull(resultType);
-
-                if (parseDelegate == null)
-                {
-                    parseDelegate = CreateParsingDelegate<T>(resultType);
-
-                    //add the delegate to the dictionary of resolved delegates_delegates[typeof(T)] = parseDelegate;
-                    ParsingDelegateCache[resultType] = parseDelegate;
-                }
-            }
-
-            return TryParse(s, out result, parseDelegate);
         }
 
         private static TryParseDelegate<T> CreateParsingDelegate<T>(Type resultType)
