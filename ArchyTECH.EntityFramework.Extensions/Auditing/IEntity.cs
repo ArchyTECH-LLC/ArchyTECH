@@ -1,4 +1,6 @@
-﻿namespace ArchyTECH.EntityFramework.Extensions.Auditing
+﻿using System;
+
+namespace ArchyTECH.EntityFramework.Extensions.Auditing
 {
     public interface IEntity
     {

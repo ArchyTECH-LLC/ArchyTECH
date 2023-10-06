@@ -1,4 +1,7 @@
-﻿namespace ArchyTECH.EntityFramework.Extensions.DbContext
+﻿using System;
+using System.Linq;
+
+namespace ArchyTECH.EntityFramework.Extensions.DbContext
 {
     public interface IDbContext : IDisposable
     {
